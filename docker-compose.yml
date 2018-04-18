@@ -1,0 +1,56 @@
+version: '2'
+
+# Data volume for Mongo
+volumes:
+  mongostorage:
+  # Services (Docker containers)
+services:
+  # Mongo Database service
+  mongodb:
+  # Give it a name 
+    container_name: mongodb_container
+    image: mongo
+    # We use mongostorage data volume and we will use the /data/db path for the database inside the container
+    volumes: 
+      - mongostorage:/data/db
+    # Expose a MongoDB port to connect to, defined by the MONGODB_EXPOSED_PORT environment variable
+    # and map this port to the 27017 internal port which is what MongoDB uses
+    ports:
+      - "2717:27017"
+    # Passing environment variables from the host to the container. 
+    # Our container expects the following variables (as explained here: https://hub.docker.com/r/alexpunct/mongo/)
+    environment:
+      MONGODB_ADMIN_USER: $MONGODB_ADMIN_USER
+      MONGODB_ADMIN_PASS: $MONGODB_ADMIN_PASS
+      MONGODB_APPLICATION_DATABASE: $MONGODB_APPLICATION_DATABASE
+      MONGODB_APPLICATION_USER: $MONGODB_APPLICATION_USER
+      MONGODB_APPLICATION_PASS: $MONGODB_APPLICATION_PASS
+
+  # REST API service
+  restapi:
+    # Give it a name
+    container_name: restapi_container
+    # https://hub.docker.com/r/linuxenko/mongo-rest/
+    restart: always
+    build: .
+    ports:
+     - "5407:5407"
+    links:
+     - mongo
+    environment:
+      VIRTUAL_HOST: api.tryurapp.com 
+      LETSENCRYPT_HOST: api.tryurapp.com
+      LETSENCRYPT_EMAIL: bootcamp5_project@gmail.com
+    ports:
+     - "5407:5407"
+    # This field creates a hosts file entry in our container that points to the mongodb service
+    # so we can access it with the hostname mongo as in http://mongo:3000 from this container.
+    # It also tells the mongodb service to allow our service to connect to it (if we hand't have exposed a port already)
+    # Ultimately, it makes sure that mongodb starts before our restaapi service
+    links:
+     - mongodb:mongo
+
+networks:
+  default:
+    external:
+      name: dockerwp

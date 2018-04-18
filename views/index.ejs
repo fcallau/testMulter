@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <h4>Try a Creating a user</h4>
+    <h5>Application</h5>
+    <p>x-www-form-urlencoded</p>
+    <h5>Header</h5>
+    <p>
+	  "key":"email",  "value":"aaa@gmail.com"
+    </p>
+    <p>
+	  "key":"password", "value":"asdasdfdsafd",
+    </p>
+    <p>
+	  "key":"name", "value":"pepe1"
+    </p>
+    <h5>Post</h5>
+    <p><%= create_user_url %></p>
+   
+    <h4>Try a login</h4>
+    <h5>Get</h5>
+    <p><%= auth_user_url %></p>
+    <h5>Header</h5>
+    <p>
+	  "key":"email",  "value":"aaa@gmail.com"
+    </p>
+    <p>
+	  "key":"password", "value":"asdasdfdsafd",
+    </p>
+    <p></p>
+    
+  </body>
+
+</html>
+
